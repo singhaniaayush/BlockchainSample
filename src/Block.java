@@ -25,6 +25,8 @@ public class Block {
 
 	/** The time stamp. */
 	private long timeStamp;
+	
+	private int nounce;
 
 	/**
 	 * Instantiates a new block.
@@ -46,10 +48,21 @@ public class Block {
 	 * @return the string
 	 */
 	public String calHash() {
-		String calhash = applySHA(prevHash + data + Long.toString(timeStamp));
+		String calhash = applySHA(prevHash + data + Long.toString(timeStamp) + Integer.toString(nounce));
 		return calhash;
 	}
 	
+	
+	public void mineBlock(int difficulty) {
+		String target = new String(new char[difficulty]).replace('\0', '0');
+		
+		while(!Hash.substring(0,difficulty).equals(target)) {
+			nounce++;
+			Hash = calHash();
+		}
+		
+		System.out.println("BlockMined "+Hash);
+	}
 	
 	/**
 	 * Apply SHA.
