@@ -1,3 +1,4 @@
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
 
@@ -20,9 +21,30 @@ public class Transaction {
 		this.inputs = inputs;
 	}
 	
+	/**
+	 * Cal hash.
+	 *
+	 * @return the string
+	 */
 	private String calHash() {
 		sequence++;
 		return StringUtil.applySHA( StringUtil.getStringFromKey(sender) + StringUtil.getStringFromKey(reciepient) + 
 				Float.toString(value) + sequence);
 	}
+	
+	/**
+	 * Generate signature.
+	 *
+	 * @param privatekey the privatekey
+	 */
+	public void generateSignature(PrivateKey privatekey) {
+		String data = StringUtil.getStringFromKey(sender) + StringUtil.getStringFromKey(reciepient) + Float.toString(value);
+		signature = StringUtil.applyECDSASig(privatekey, data);	
+	}
+	
+	public boolean verifySignature() {
+		String data = StringUtil.getStringFromKey(sender) + StringUtil.getStringFromKey(reciepient) + Float.toString(value);
+		return StringUtil.verifySig(sender,data,signature);
+	}
+	
 }

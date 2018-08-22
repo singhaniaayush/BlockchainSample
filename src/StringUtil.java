@@ -64,7 +64,7 @@ public class StringUtil {
 	 * @param signature the signature
 	 * @return true, if successful
 	 */
-	public boolean verifySig(PublicKey publicKey, String data, byte[] signature) {
+	public static boolean verifySig(PublicKey publicKey, String data, byte[] signature) {
 		try {
 			Signature ecdsaverify = Signature.getInstance("ECDSA","BC");
 			ecdsaverify.initVerify(publicKey);
@@ -76,6 +76,12 @@ public class StringUtil {
 		}
 	}
 
+	/**
+	 * Gets the string from key.
+	 *
+	 * @param key the key
+	 * @return the string from key
+	 */
 	public static String getStringFromKey(PublicKey key) {
 		return key.toString();
 	}
