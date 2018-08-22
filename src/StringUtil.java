@@ -1,5 +1,7 @@
 import java.security.MessageDigest;
+import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.Signature;
 
 /**
  * The Class StringUtil.
@@ -11,7 +13,7 @@ public class StringUtil {
 	 * @param input the input
 	 * @return the string
 	 */
-	
+
 	public static String applySHA(String input) {
 		try {
 			MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -29,7 +31,51 @@ public class StringUtil {
 			throw new RuntimeException(e);
 		}
 	}
+
+	/**
+	 * Apply ECDSA signature.
+	 *
+	 * @param key the key
+	 * @param input the input
+	 * @return the byte[]
+	 */
+	public static byte[] applyECDSASig(PrivateKey key, String input) {
+		Signature dsa;
+		byte[] output = new byte[0];
+
+		try {
+			dsa = Signature.getInstance("ECDSA", "BC");
+			dsa.initSign(key);
+			byte[] strbyte = input.getBytes();
+			dsa.update(strbyte);
+			byte[] realsig = dsa.sign();
+			output = realsig;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return output;
+	}
 	
+	/**
+	 * Verify signature.
+	 *
+	 * @param publicKey the public key
+	 * @param data the data
+	 * @param signature the signature
+	 * @return true, if successful
+	 */
+	public boolean verifySig(PublicKey publicKey, String data, byte[] signature) {
+		try {
+			Signature ecdsaverify = Signature.getInstance("ECDSA","BC");
+			ecdsaverify.initVerify(publicKey);
+			ecdsaverify.update(data.getBytes());
+			return ecdsaverify.verify(signature);
+		}
+		catch(Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	public static String getStringFromKey(PublicKey key) {
 		return key.toString();
 	}
