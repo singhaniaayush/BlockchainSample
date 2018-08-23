@@ -2,6 +2,7 @@
  * The Class BlockChain.
  */
 
+import java.security.Security;
 import java.util.ArrayList;
 
 import com.google.gson.GsonBuilder;
@@ -10,6 +11,8 @@ public class BlockChain {
 	
 	public static ArrayList<Block> blockchain = new ArrayList<Block>();
 	public static int difficulty = 5;
+	public static Wallet walletA;
+	public static Wallet walletB;
 	
 	public static Boolean isChainValid() {
 		
@@ -56,27 +59,44 @@ public class BlockChain {
 		System.out.println("Second hash: " +second.prevHash);
 		*/
 		
-		//ArrayList blocks
-		blockchain.add(new Block("Genesis Block","0"));
-		System.out.println("\n Trying to mine genesis block");
-		blockchain.get(0).mineBlock(difficulty);
+		//Setup Bouncey castle as a Security Provider
+		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 		
-		blockchain.add(new Block("First Block", blockchain.get(blockchain.size()-1).Hash));
-		System.out.println("\n Trying to mine first block");
-		blockchain.get(1).mineBlock(difficulty);
+		walletA = new Wallet();
+		walletB = new Wallet();
 		
-		blockchain.add(new Block("Second Block", blockchain.get(blockchain.size()-1).Hash));
-		System.out.println("\n Trying to mine second block");
-		blockchain.get(2).mineBlock(difficulty);
+		System.out.println("Public and private keys: ");
+		System.out.println(StringUtil.getStringFromKey(walletA.privatekey));
+		System.out.println(StringUtil.getStringFromKey(walletA.publickey));
 		
-		System.out.println("\n Chain validity: "+ isChainValid());
+		Transaction trans = new Transaction(walletA.publickey, walletB.publickey, 5, null);
+		trans.generateSignature(walletA.privatekey);
 		
-		//Displaying in JSON format
-		String blockchainJson = new GsonBuilder().setPrettyPrinting().create().toJson(blockchain);
-		System.out.println("\nThe BlockChain");
-		System.out.println(blockchainJson);
+		System.out.println("Is Sign verified:");
+		System.out.println(trans.verifySignature());
 		
-
+//		
+//		//ArrayList blocks
+//		blockchain.add(new Block("Genesis Block","0"));
+//		System.out.println("\n Trying to mine genesis block");
+//		blockchain.get(0).mineBlock(difficulty);
+//		
+//		blockchain.add(new Block("First Block", blockchain.get(blockchain.size()-1).Hash));
+//		System.out.println("\n Trying to mine first block");
+//		blockchain.get(1).mineBlock(difficulty);
+//		
+//		blockchain.add(new Block("Second Block", blockchain.get(blockchain.size()-1).Hash));
+//		System.out.println("\n Trying to mine second block");
+//		blockchain.get(2).mineBlock(difficulty);
+//		
+//		System.out.println("\n Chain validity: "+ isChainValid());
+//		
+//		//Displaying in JSON format
+//		String blockchainJson = new GsonBuilder().setPrettyPrinting().create().toJson(blockchain);
+//		System.out.println("\nThe BlockChain");
+//		System.out.println(blockchainJson);
+//		
+//
 	}
 
 }

@@ -85,4 +85,8 @@ public class StringUtil {
 	public static String getStringFromKey(PublicKey key) {
 		return key.toString();
 	}
+	
+	public static String getStringFromKey(PrivateKey key) {
+		return key.toString();
+	}
 }
