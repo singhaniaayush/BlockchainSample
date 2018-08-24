@@ -4,12 +4,14 @@
 
 import java.security.Security;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.google.gson.GsonBuilder;
 
 public class BlockChain {
 	
 	public static ArrayList<Block> blockchain = new ArrayList<Block>();
+	public static HashMap<String, TransactionOutput> UTXOs = new HashMap<String, TransactionOutput>();
 	public static int difficulty = 5;
 	public static Wallet walletA;
 	public static Wallet walletB;
